@@ -1,3 +1,5 @@
+package day1
+
 import scala.io.Source
 
 def fn(prev: Set[Int], n: Int, f: Int => Int): Either[Set[Int], Int] =
@@ -11,13 +13,13 @@ def search(numbers: IterableOnce[Int], f: Int => Int): Option[Int] =
   .find(_.isRight).flatMap(_.toOption)
 
 @main
-def day1part1(): Unit =
+def part1(): Unit =
   val numbers = Source.fromResource("day1.txt").getLines().map(_.toInt)
   val result = search(numbers, 2020 - _)
   println(result)
 
 @main
-def day1part2(): Unit =
+def part2(): Unit =
   val numbers = Source.fromResource("day1.txt").getLines().map(_.toInt).toVector
   val result =
     LazyList

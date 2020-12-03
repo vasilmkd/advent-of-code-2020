@@ -1,3 +1,5 @@
+package day3
+
 import scala.io.Source
 
 case class FoldState(index: Int, skip: Int, count: Int)
@@ -17,13 +19,13 @@ def countTrees(lines: LazyList[String], slope: (Int, Int)): Long =
   lines.foldLeft(FoldState(0, 0, 0))(slopedFn.tupled(slope)).count.toLong
 
 @main
-def day3part1(): Unit =
+def part1(): Unit =
   val lines = LazyList.from(Source.fromResource("day3.txt").getLines())
   val result = countTrees(lines, (3, 1))
   println(result)
 
 @main
-def day3part2(): Unit =
+def part2(): Unit =
   val lines = LazyList.from(Source.fromResource("day3.txt").getLines())
   val result =
     List((1, 1), (3, 1), (5, 1), (7, 1), (1, 2))

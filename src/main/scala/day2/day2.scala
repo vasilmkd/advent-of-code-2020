@@ -1,3 +1,5 @@
+package day2
+
 import scala.io.Source
 
 case class Config(letter: Char, min: Int, max: Int)
@@ -24,11 +26,11 @@ def validate2(config: Config, password: String): Boolean =
   fst ^ snd
 
 @main
-def day2part1(): Unit =
+def part1(): Unit =
   val result = Source.fromResource("day2.txt").getLines().count(parse andThen validate1)
   println(result)
 
 @main
-def day2part2(): Unit =
+def part2(): Unit =
   val result = Source.fromResource("day2.txt").getLines().count(parse andThen validate2)
   println(result)
