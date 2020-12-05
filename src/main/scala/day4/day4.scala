@@ -7,36 +7,15 @@ type Passport = Map[String, String]
 
 case class State(valid: Int, partial: Passport)
 
-def validateBirthYear(str: String): Boolean =
-  "19[2-9]\\d|200[012]".r.matches(str)
-
-def validateIssueYear(str: String): Boolean =
-  "20(1\\d|20)".r.matches(str)
-
-def validateExpirationYear(str: String): Boolean =
-  "20(2\\d|30)".r.matches(str)
-
-def validateHeight(str: String): Boolean =
-  "1([5-8]\\d|9[0-3])cm$|(59|6\\d|7[0-6])in$".r.matches(str)
-
-def validateHairColor(str: String): Boolean =
-  "#[a-f0-9]{6}".r.matches(str)
-
-def validateEyeColor(str: String): Boolean =
-  "amb|blu|brn|gry|grn|hzl|oth".r.matches(str)
-
-def validatePassportId(str: String): Boolean =
-  "\\d{9}".r.matches(str)
-
 val validators: Map[String, String => Boolean] =
   Map(
-    "byr" -> validateBirthYear,
-    "iyr" -> validateIssueYear,
-    "eyr" -> validateExpirationYear,
-    "hgt" -> validateHeight,
-    "hcl" -> validateHairColor,
-    "ecl" -> validateEyeColor,
-    "pid" -> validatePassportId
+    "byr" -> "19[2-9]\\d|200[012]".r.matches,
+    "iyr" -> "20(1\\d|20)".r.matches,
+    "eyr" -> "20(2\\d|30)".r.matches,
+    "hgt" -> "1([5-8]\\d|9[0-3])cm$|(59|6\\d|7[0-6])in$".r.matches,
+    "hcl" -> "#[a-f0-9]{6}".r.matches,
+    "ecl" -> "amb|blu|brn|gry|grn|hzl|oth".r.matches,
+    "pid" -> "\\d{9}".r.matches
   )
 
 def validate1(passport: Passport): Boolean =
