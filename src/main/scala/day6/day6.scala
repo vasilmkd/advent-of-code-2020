@@ -6,7 +6,9 @@ val Universe = "abcdefghijklmnopqrstuvwxyz".toSet
 
 trait Monoid[A]:
   def identity: A
-  extension (x: A) def combine(y: A): A
+  extension (x: A):
+    def combine(y: A): A
+    final def |+| (y: A): A = combine(y)
 
 case class State(sum: Int, partial: Set[Char])
 
@@ -15,7 +17,7 @@ def foldFn(using monoid: Monoid[Set[Char]])(state: State, line: String): State =
     val count = state.partial.size
     State(state.sum + count, monoid.identity)
   else
-    State(state.sum, state.partial.combine(line.toSet))
+    State(state.sum, state.partial |+| line.toSet)
 
 @main
 def part1(): Unit =
