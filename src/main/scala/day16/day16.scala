@@ -47,10 +47,9 @@ enum ParseState:
   case MyTicket(rules: Vector[Rule], myTicket: Ticket)
   case NearbyTickets(rules: Vector[Rule], myTicket: Ticket, nearbyTickets: Vector[Ticket])
 
-case class Rule(name: String, range1: NumericRange.Inclusive[Long], range2: NumericRange.Inclusive[Long]) {
+case class Rule(name: String, range1: NumericRange.Inclusive[Long], range2: NumericRange.Inclusive[Long]):
   def contains(n: Long): Boolean =
     range1.contains(n) || range2.contains(n)
-}
 
 case class Ticket(positions: Vector[Long]) extends AnyVal
 
