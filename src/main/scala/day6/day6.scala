@@ -6,7 +6,7 @@ val Universe = "abcdefghijklmnopqrstuvwxyz".toSet
 
 trait Monoid[A]:
   def identity: A
-  extension (x: A):
+  extension (x: A)
     def combine(y: A): A
     final def |+| (y: A): A = combine(y)
 
@@ -21,7 +21,7 @@ def foldFn(using monoid: Monoid[Set[Char]])(state: State, line: String): State =
 
 @main
 def part1(): Unit =
-  given Monoid[Set[Char]]:
+  given Monoid[Set[Char]] with
     def identity: Set[Char] = Set.empty
     extension (x: Set[Char]) def combine(y: Set[Char]): Set[Char] =
       x.union(y)
@@ -34,7 +34,7 @@ def part1(): Unit =
 
 @main
 def part2(): Unit =
-  given Monoid[Set[Char]]:
+  given Monoid[Set[Char]] with
     def identity: Set[Char] = Universe
     extension (x: Set[Char]) def combine(y: Set[Char]): Set[Char] =
       x.intersect(y)

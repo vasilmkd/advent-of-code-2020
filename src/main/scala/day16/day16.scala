@@ -12,7 +12,7 @@ trait Monoid[A]:
     final def |+| (y: A): A = combine(y)
 
 object Monoid:
-  given [A: Monoid] as Monoid[Option[A]]:
+  given [A: Monoid]: Monoid[Option[A]] with
     val identity: Option[A] = Some(summon[Monoid[A]].identity)
     extension (x: Option[A])
       def combine(y: Option[A]): Option[A] =
@@ -21,7 +21,7 @@ object Monoid:
           a2 <- y
         yield a1 |+| a2
 
-  given Monoid[Long]:
+  given Monoid[Long] with
     val identity: Long = 0L
     extension (x: Long)
       def combine(y: Long): Long =
@@ -36,7 +36,7 @@ trait LeftFoldable[F[_]]:
       fa.leftFold(summon[Monoid[A]].identity)(_ |+| _)
 
 object LeftFoldable:
-  given LeftFoldable[Vector]:
+  given LeftFoldable[Vector] with
     extension[A, B] (fa: Vector[A])
       def leftFold(b: B)(f: (B, A) => B): B =
         fa.foldLeft(b)(f)
@@ -82,11 +82,11 @@ def parseLine(line: String): Rule | Ticket | "your ticket:" | "nearby tickets:" 
 
 def parseFoldFn(state: ParseState, line: String): ParseState =
   (state, parseLine(line)) match
-    case (ParseState.Rules(rules), r as Rule(_, _, _)) => ParseState.Rules(rules :+ r)
+    case (ParseState.Rules(rules), r @ Rule(_, _, _)) => ParseState.Rules(rules :+ r)
     case (ParseState.Rules(rules), "your ticket:") => ParseState.MyTicketHeader(rules)
-    case (ParseState.MyTicketHeader(rules), t as Ticket(_)) => ParseState.MyTicket(rules, t)
+    case (ParseState.MyTicketHeader(rules), t @ Ticket(_)) => ParseState.MyTicket(rules, t)
     case (ParseState.MyTicket(rules, mt), "nearby tickets:") => ParseState.NearbyTickets(rules, mt, Vector.empty)
-    case (ParseState.NearbyTickets(rules, mt, nts), t as Ticket(_)) => ParseState.NearbyTickets(rules, mt, nts :+ t)
+    case (ParseState.NearbyTickets(rules, mt, nts), t @ Ticket(_)) => ParseState.NearbyTickets(rules, mt, nts :+ t)
     case _ => state
 
 def validateTicket(rules: Vector[Rule])(ticket: Ticket): Option[Long] =
