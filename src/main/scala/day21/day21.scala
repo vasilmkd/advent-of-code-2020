@@ -17,16 +17,18 @@ def parseRole(line: String): Rule =
 def iteration(mapping: Map[String, Vector[String]]): Map[String, Vector[String]] =
   val candidates =
     mapping
-      .collect:
+      .collect {
         case (a, Vector(i)) => (a, i)
+      }
       .toVector
   candidates
-    .foldLeft(mapping):
+    .foldLeft(mapping) {
       case (acc, (a, i)) =>
-        acc.map:
-          (all, ings) =>
-            if all == a then (all, ings)
-            else (all, ings.filterNot(_ == i))
+        acc.map { (all, ings) =>
+          if all == a then (all, ings)
+          else (all, ings.filterNot(_ == i))
+        }
+    }
 
 @main
 def part1(): Unit =
@@ -39,13 +41,14 @@ def part1(): Unit =
 
   var mapping =
     rules
-      .foldLeft(Map.empty[String, Vector[String]]):
-        (acc, r) =>
-          r.allergens.foldLeft(acc):
-            (acc, a) =>
-              acc.updatedWith(a):
-                case Some(is) => Some(r.ingredients.intersect(is))
-                case None => Some(r.ingredients)
+      .foldLeft(Map.empty[String, Vector[String]]) { (acc, r) =>
+        r.allergens.foldLeft(acc) { (acc, a) =>
+          acc.updatedWith(a) {
+            case Some(is) => Some(r.ingredients.intersect(is))
+            case None => Some(r.ingredients)
+          }
+        }
+      }
 
   LazyList
     .iterate(iteration(mapping))(iteration)
@@ -73,13 +76,14 @@ def part2(): Unit =
 
   var mapping =
     rules
-      .foldLeft(Map.empty[String, Vector[String]]):
-        (acc, r) =>
-          r.allergens.foldLeft(acc):
-            (acc, a) =>
-              acc.updatedWith(a):
-                case Some(is) => Some(r.ingredients.intersect(is))
-                case None => Some(r.ingredients)
+      .foldLeft(Map.empty[String, Vector[String]]) { (acc, r) =>
+        r.allergens.foldLeft(acc) { (acc, a) =>
+          acc.updatedWith(a) {
+            case Some(is) => Some(r.ingredients.intersect(is))
+            case None => Some(r.ingredients)
+          }
+        }
+      }
 
   LazyList
     .iterate(iteration(mapping))(iteration)
@@ -88,9 +92,11 @@ def part2(): Unit =
     .last
 
   val blah =
-    mapping.collect:
+    mapping.collect {
       case (a, Vector(i)) => (a, i)
-
+    }
   val result = blah.toVector.sortBy(_._1).map(_._2).mkString(",")
 
   println(result)
+
+

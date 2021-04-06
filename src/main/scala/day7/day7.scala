@@ -16,23 +16,23 @@ def parseSentence(line: String): (Bag, List[(Int, Bag)]) =
     rest
       .toList
       .filterNot(_ == "no other")
-      .map:
-        s =>
-          val ps = s.split(" ")
-          (ps(0).toInt, ps.drop(1).mkString(" "))
+      .map { s =>
+        val ps = s.split(" ")
+        (ps(0).toInt, ps.drop(1).mkString(" "))
+      }
   (bag, list)
 
 def assembleGraph1(graph: Graph, info: (Bag, List[(Int, Bag)])): Graph =
   val (bag, list) = info
-  list.foldLeft(graph):
-    (g, b) =>
-      g.updatedWith(b._2)(op => Some(op.getOrElse(Set.empty) + (b._1 -> bag)))
+  list.foldLeft(graph) { (g, b) =>
+    g.updatedWith(b._2)(op => Some(op.getOrElse(Set.empty) + (b._1 -> bag)))
+  }
 
 def assembleGraph2(graph: Graph, info: (Bag, List[(Int, Bag)])): Graph =
   val (bag, list) = info
-  list.foldLeft(graph):
-    (g, b) =>
-      g.updatedWith(bag)(op => Some(op.getOrElse(Set.empty) + b))
+  list.foldLeft(graph) { (g, b) =>
+    g.updatedWith(bag)(op => Some(op.getOrElse(Set.empty) + b))
+  }
 
 def bfs(graph: Graph, init: Bag): Set[Bag] =
   @tailrec

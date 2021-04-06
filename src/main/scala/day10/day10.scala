@@ -17,11 +17,12 @@ val cache: Map[Long, Long] = Map.empty
 def possibilities(available: Set[Long])(adapter: Long): Long =
   cache
     .get(adapter)
-    .fold:
+    .fold {
       val rec = Vector(1, 2, 3).map(_ + adapter).filter(available).map(possibilities(available)).sum
       val res = math.max(rec, 1L)
       cache += (adapter -> res)
       res
+    }
     (identity)
 
 @main

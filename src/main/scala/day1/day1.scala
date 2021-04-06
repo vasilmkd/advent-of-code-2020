@@ -7,10 +7,10 @@ def fn(prev: Set[Int], n: Int, f: Int => Int): Either[Set[Int], Int] =
   if prev(other) then Right(other * n) else Left(prev + n)
 
 def search(numbers: IterableOnce[Int], f: Int => Int): Option[Int] =
-  LazyList.from(numbers).scanLeft[Either[Set[Int], Int]](Left(Set.empty)):
+  LazyList.from(numbers).scanLeft[Either[Set[Int], Int]](Left(Set.empty)) {
     case (Left(set), n) => fn(set, n, f)
     case (Right(res), _) => Right(res)
-  .find(_.isRight).flatMap(_.toOption)
+  }.find(_.isRight).flatMap(_.toOption)
 
 @main
 def part1(): Unit =
@@ -26,6 +26,7 @@ def part2(): Unit =
       .from(numbers)
       .map(n => (n, search(numbers, 2020 - n - _)))
       .find(_._2.isDefined)
-      .collect:
+      .collect {
         case (n, Some(other)) => n * other
+      }
   println(result)

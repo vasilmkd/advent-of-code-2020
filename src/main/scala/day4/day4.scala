@@ -35,12 +35,10 @@ def foldFn(state: State, line: String, validate: Passport => Boolean): State =
   else
     val parts = line.split(" ")
     val partial =
-      parts
-        .map:
-          p =>
-            val Array(key, value) = p.split(":")
-            (key, value)
-        .toMap
+      parts.map { p =>
+        val Array(key, value) = p.split(":")
+        (key, value)
+      }.toMap
     State(state.valid, state.partial ++ partial)
 
 @main

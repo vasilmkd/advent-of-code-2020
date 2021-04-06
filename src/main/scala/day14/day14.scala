@@ -61,11 +61,11 @@ def calculateAddress(address: Long, mask: String): String =
   pad(address).zip(mask).map(operation2).mkString
 
 def expand(mask: String): Vector[String] =
-  mask.foldLeft(Vector("")):
-    (acc, b) =>
-      b match
-        case 'X' => acc.flatMap(m => Vector(m :+ '0', m :+ '1'))
-        case x => acc.map(_ :+ x)
+  mask.foldLeft(Vector("")) { (acc, b) =>
+    b match
+      case 'X' => acc.flatMap(m => Vector(m :+ '0', m :+ '1'))
+      case x => acc.map(_ :+ x)
+  }
 
 def foldFn2(state: State, instruction: Instruction): State =
   instruction match
@@ -74,8 +74,9 @@ def foldFn2(state: State, instruction: Instruction): State =
     case Instruction.Store(addr, value) =>
       state.copy(
         memory =
-          expand(calculateAddress(addr, state.mask)).foldLeft(state.memory):
-            (acc, a) => acc.updated(parseBinaryString(a), value)
+          expand(calculateAddress(addr, state.mask)).foldLeft(state.memory) { (acc, a) =>
+            acc.updated(parseBinaryString(a), value)
+          }
       )
 
 @main

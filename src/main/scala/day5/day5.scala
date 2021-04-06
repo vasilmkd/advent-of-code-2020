@@ -50,12 +50,12 @@ def part2(): Unit =
   val result =
     ids
       .sliding(2)
-      .find:
+      .find {
         case Vector(a, b) => b - a == 2
         case _ => false
-      .map:
+      }.map {
         case Vector(a, _) => a + 1
         case _ => 0
-      .getOrElse(0)
+      }.getOrElse(0)
 
   println(result)

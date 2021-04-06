@@ -133,8 +133,10 @@ def part1(): Unit =
     (Source.fromResource("day20.txt").getLines() ++ List(""))
       .foldLeft(ParseState(Vector.empty, None))(parseFoldFn)
   val result = solve(Tile(0, 0, raw.head), raw.tail)
-  val (minX, maxX, minY, maxY) = result.tiles.foldLeft((Int.MaxValue, Int.MinValue, Int.MaxValue, Int.MinValue)):
-    case ((minX, maxX, minY, maxY), t) => (math.min(minX, t.x), math.max(maxX, t.x), math.min(minY, t.y), math.max(maxY, t.y))
+  val (minX, maxX, minY, maxY) = result.tiles.foldLeft((Int.MaxValue, Int.MinValue, Int.MaxValue, Int.MinValue)) {
+    case ((minX, maxX, minY, maxY), t) =>
+      (math.min(minX, t.x), math.max(maxX, t.x), math.min(minY, t.y), math.max(maxY, t.y))
+  }
   val c1 = result.tiles.find(t => t.x == minX && t.y == minY).get
   val c2 = result.tiles.find(t => t.x == maxX && t.y == minY).get
   val c3 = result.tiles.find(t => t.x == minX && t.y == maxY).get
@@ -155,18 +157,21 @@ val monster2: String = "#    ##    ##    ###".replace(" ", ".")
 val monster3: String = " #  #  #  #  #  #   ".replace(" ", ".")
 
 def findMonster(group: Vector[String]): Boolean =
-  group(1).tails.map(_.indexOfRegex(monster2)).exists:
+  group(1).tails.map(_.indexOfRegex(monster2)).exists {
     case Some(n) =>
       group(0).drop(n).indexOfRegex(monster1) == Some(0) && group(2).drop(n).indexOfRegex(monster3) == Some(0)
     case None => false
+  }
 
 def countMonsters(puzzle: Array[Array[Char]]): Int =
   puzzle.map(_.mkString).toVector.sliding(3).count(findMonster)
 
 def mergePuzzle(puzzle: Puzzle, n: Int): Array[Array[Char]] =
   val trimmed = puzzle.tiles.map(t => t.copy(tile = t.tile.copy(tile = trim(t.tile.tile))))
-  val (minX, maxX, minY, maxY) = trimmed.foldLeft((Int.MaxValue, Int.MinValue, Int.MaxValue, Int.MinValue)):
-    case ((minX, maxX, minY, maxY), t) => (math.min(minX, t.x), math.max(maxX, t.x), math.min(minY, t.y), math.max(maxY, t.y))
+  val (minX, maxX, minY, maxY) = trimmed.foldLeft((Int.MaxValue, Int.MinValue, Int.MaxValue, Int.MinValue)) {
+    case ((minX, maxX, minY, maxY), t) =>
+      (math.min(minX, t.x), math.max(maxX, t.x), math.min(minY, t.y), math.max(maxY, t.y))
+  }
   val groups = trimmed.map(t => t.copy(x = t.x - minX, y = t.y - minY)).sortBy(t => (-t.y, t.x)).grouped(n).toVector
   groups.map(combine(_, n).tileString).foldLeft(Array.empty[Array[Char]])(_ ++ _.split("\n").map(_.toCharArray))
 

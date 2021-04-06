@@ -71,8 +71,9 @@ def rule2(universe: Universe)(coordinate: Coordinate): Set[Coordinate] =
 
 def iteration(universe: Universe): Universe =
   val r1 = universe.filter(t => !rule1(universe)(t._1)).keySet
-  val r2 = universe.foldLeft(Set.empty[Coordinate]):
+  val r2 = universe.foldLeft(Set.empty[Coordinate]) {
     case (acc, (c, _)) => acc union rule2(universe)(c)
+  }
   (r1 union r2).map((_, Tile.Black).asInstanceOf[(Coordinate, Tile.Black.type)]).toMap
 
 @main
@@ -80,11 +81,12 @@ def part1(): Unit =
   val lines = Source.fromResource("day24.txt").getLines().map(parseLine).toVector
   val result =
     lines
-      .foldLeft(Map.empty[Coordinate, Tile.Black.type]):
-        (universe, line) =>
-          universe.updatedWith(line.foldLeft(zero)(_ move _)):
-            case None => Some(Tile.Black)
-            case _ => None
+      .foldLeft(Map.empty[Coordinate, Tile.Black.type]) { (universe, line) =>
+        universe.updatedWith(line.foldLeft(zero)(_ move _)) {
+          case None => Some(Tile.Black)
+          case _ => None
+        }
+      }
   println(result.size)
 
 @main
@@ -92,11 +94,12 @@ def part2(): Unit =
   val lines = Source.fromResource("day24.txt").getLines().map(parseLine).toVector
   val universe =
     lines
-      .foldLeft(Map.empty[Coordinate, Tile.Black.type]):
-        (universe, line) =>
-          universe.updatedWith(line.foldLeft(zero)(_ move _)):
-            case None => Some(Tile.Black)
-            case _ => None
+      .foldLeft(Map.empty[Coordinate, Tile.Black.type]) { (universe, line) =>
+        universe.updatedWith(line.foldLeft(zero)(_ move _)) {
+          case None => Some(Tile.Black)
+          case _ => None
+        }
+      }
   val result =
     LazyList
       .iterate(iteration(universe))(iteration)

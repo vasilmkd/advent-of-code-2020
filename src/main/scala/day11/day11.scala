@@ -22,8 +22,7 @@ def addPair(p1: (Int, Int), p2: (Int, Int)): (Int, Int) =
 def adjacent(rows: Int, cols: Int)(row: Int, col: Int): Vector[(Int, Int)] =
   directions
     .map(addPair(_, (row, col)))
-    .filter:
-      inBounds(rows, cols).tupled
+    .filter(inBounds(rows, cols).tupled)
 
 def firstVisible(map: Vector[Vector[Char]])(row: Int, col: Int, direction: (Int, Int)): Option[(Int, Int)] =
   LazyList
@@ -75,9 +74,9 @@ def flip(c: Char): Char =
 def transform(map: Vector[Vector[Char]], coordinates: Vector[(Int, Int)], check: (Int, Int) => Boolean): Vector[Vector[Char]] =
   val changes = coordinates.filter(check.tupled)
   var copy = map.map(_.toArray).toArray
-  changes.foreach:
-    (r, c) =>
-      copy(r)(c) = flip(map(r)(c))
+  changes.foreach { (r, c) =>
+    copy(r)(c) = flip(map(r)(c))
+  }
   copy.map(_.toVector).toVector
 
 def mapString(map: Vector[Vector[Char]]): String =
@@ -90,10 +89,11 @@ def countOccupied(map: Vector[Vector[Char]]): Int =
 def part1(): Unit =
   val map = Source.fromResource("day11.txt").getLines().map(_.toVector).toVector
   val coordinates =
-    map.zipWithIndex.flatMap:
-      (r, i) =>
-        r.zipWithIndex.map:
-          (_, j) => (i, j)
+    map.zipWithIndex.flatMap { (r, i) =>
+      r.zipWithIndex.map { (_, j) =>
+        (i, j)
+      }
+    }
   var blah = map
   LazyList
     .continually(blah)
@@ -107,10 +107,11 @@ def part1(): Unit =
 def part2(): Unit =
   val map = Source.fromResource("day11.txt").getLines().map(_.toVector).toVector
   val coordinates =
-    map.zipWithIndex.flatMap:
-      (r, i) =>
-        r.zipWithIndex.map:
-          (_, j) => (i, j)
+    map.zipWithIndex.flatMap { (r, i) =>
+      r.zipWithIndex.map { (_, j) =>
+        (i, j)
+      }
+    }
   var blah = map
   LazyList
     .continually(blah)

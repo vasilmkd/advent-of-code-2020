@@ -33,8 +33,9 @@ def game(cups: Circular, start: Int, max: Int, iterations: Int): Circular =
 def part1(): Unit =
   val input = Source.fromResource("day23.txt").getLines().toVector.head.zipWithIndex.map(_._1.toString.toInt).toVector
   val blah = input :+ input.head
-  val cups = input.zipWithIndex.foldLeft(mutable.Map.empty[Int, Int]):
+  val cups = input.zipWithIndex.foldLeft(mutable.Map.empty[Int, Int]) {
     case (acc, (n, i)) => acc += (n -> blah(i + 1))
+  }
   val result = game(cups, input.head, input.max, 100)
   val sequence =
     LazyList
@@ -46,8 +47,9 @@ def part1(): Unit =
 @main
 def part2(): Unit =
   val input = Source.fromResource("day23.txt").getLines().toVector.head.zipWithIndex.map(_._1.toString.toInt).toVector
-  var cups = input.zipWithIndex.foldLeft(mutable.Map.empty[Int, Int]):
+  var cups = input.zipWithIndex.foldLeft(mutable.Map.empty[Int, Int]) {
     case (acc, (n, i)) => acc += (n -> Try(input(i + 1)).getOrElse(10))
+  }
   for i <- 10 until 1_000_000
   do cups += (i -> (i + 1))
   cups += (1_000_000 -> input.head)

@@ -118,8 +118,7 @@ def dfs(valid: Vector[Rule], positions: Vector[Vector[Long]]): Vector[String] =
       possible
         .map(p => (p, loop(valid.filterNot(_.name == p), positions.tail)))
         .find(_._2.isDefined)
-        .flatMap:
-          (p, op) => op.map(p +: _)
+        .flatMap((p, op) => op.map(p +: _))
   loop(valid, positions).get
 
 @main

@@ -62,8 +62,9 @@ def part2(): Unit =
       .range(0, program.length)
       .map((program, _))
       .map(modifyProgram.tupled)
-      .collect:
+      .collect {
         case Some(p) => execute(p)
+      }
       .find(_._1)
       .map(_._2)
       .getOrElse(-1)

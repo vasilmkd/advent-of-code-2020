@@ -45,9 +45,9 @@ def part2(): Unit =
       .toVector
       .zipWithIndex
       .filterNot(_._1 == "x")
-      .map:
-        t =>
-          val mod = BigInt(t._1.toLong)
-          (mod, BigInt(-t._2.toLong) % mod)
+      .map { t =>
+        val mod = BigInt(t._1.toLong)
+        (mod, BigInt(-t._2.toLong) % mod)
+      }
   val t = chineseRemainderTheorem(buses)
   println(t._2)

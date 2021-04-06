@@ -34,12 +34,13 @@ object Parser:
     Parser(in => Some((a, in)))
 
   def char(c: Char): Parser[String] =
-    Parser:
-      in =>
-        in
-          .headOption
-          .collect:
-            case h if h == c => (c.toString, in.tail)
+    Parser { in =>
+      in
+        .headOption
+        .collect {
+          case h if h == c => (c.toString, in.tail)
+        }
+    }
 
   def many[A](p: => Parser[A]): Parser[List[A]] =
     map2(p, many(p))(_ :: _) | pure(Nil)
@@ -84,11 +85,12 @@ def part1(): Unit =
     Source
       .fromResource("day19.txt")
       .getLines()
-      .foldLeft((Map.empty[Long, Preprocess], false, Vector.empty[String])):
+      .foldLeft((Map.empty[Long, Preprocess], false, Vector.empty[String])) {
         (state, line) =>
           if state._2 then (state._1, true, state._3 :+ line)
           else if line.isEmpty then (state._1, true, state._3)
           else (state._1 + preprocessRule(line), false, state._3)
+      }
   val parser = build(preprocessed)(0L)
   val res = messages.map(parser.parse).filter(_.filter(_._2.isEmpty).isDefined).count(_.isDefined)
   println(res)
@@ -99,11 +101,12 @@ def part2(): Unit =
     Source
       .fromResource("day19.txt")
       .getLines()
-      .foldLeft((Map.empty[Long, Preprocess], false, Vector.empty[String])):
+      .foldLeft((Map.empty[Long, Preprocess], false, Vector.empty[String])) {
         (state, line) =>
           if state._2 then (state._1, true, state._3 :+ line)
           else if line.isEmpty then (state._1, true, state._3)
           else (state._1 + preprocessRule(line), false, state._3)
+      }
 
   val parser =
     Parser.map2(Parser.counted(build(preprocessed)(42L)), Parser.counted(build(preprocessed)(31L)))(validate) 

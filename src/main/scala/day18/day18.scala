@@ -34,11 +34,11 @@ trait Parser[+A]:
     Parser(in => parse(in).flatMap((a, tl) => f(a).parse(tl)))
 
   def handleErrorWith[B >: A](p: => Parser[B]): Parser[B] =
-    Parser:
-      in =>
-        parse(in) match
-          case None => p.parse(in)
-          case some => some
+    Parser { in =>
+      parse(in) match
+        case None => p.parse(in)
+        case some => some
+    }
 
   def map[B](f: A => B): Parser[B] =
     flatMap(a => Parser.pure(f(a)))
@@ -75,9 +75,9 @@ end Parser
 // Common parsers
 
 def value: Parser[Expression.Value] =
-  Parser.next.flatMap:
-    c =>
-      Parser(in => Try(c.toString.toLong).toOption.map(l => (Expression.Value(l), in)))
+  Parser.next.flatMap { c =>
+    Parser(in => Try(c.toString.toLong).toOption.map(l => (Expression.Value(l), in)))
+  }
 
 def plus: Parser[" + "] =
   (Parser.char(' ') >> Parser.char('+') >> Parser.char(' ')).as(" + ")
@@ -101,11 +101,10 @@ def parens1: Parser[Expression] =
   yield e
 
 def expression1: Parser[Expression] =
-  Parser.map2(Parser.many(sum1 | product1), value | parens1):
-    (sorps, rhs) =>
+  Parser.map2(Parser.many(sum1 | product1), value | parens1) { (sorps, rhs) =>
       val root =
         sorps
-          .reduce:
+          .reduce {
             (acc, sorp) =>
               acc match
                 case Expression.Sum(lhs, _) =>
@@ -116,23 +115,25 @@ def expression1: Parser[Expression] =
                   sorp match
                     case Expression.Sum(l, e) => Expression.Sum(Expression.Product(lhs, l), e)
                     case Expression.Product(l, e) => Expression.Product(Expression.Product(lhs, l), e)
+          }
       root match
         case Expression.Sum(lhs, _) => Expression.Sum(lhs, rhs)
         case Expression.Product(lhs, _) => Expression.Product(lhs, rhs)
+  }
 
 // Part 2 recursive left associative parsers
 
 def sum2: Parser[Expression] =
   val expr = value | parens2
-  Parser.map2(expr, Parser.many((plus >> expr).map[Expression.Sum](e => Expression.Sum(Expression.Empty, e)))):
+  Parser.map2(expr, Parser.many((plus >> expr).map[Expression.Sum](e => Expression.Sum(Expression.Empty, e)))) {
     case (l, rhss) => rhss.foldLeft(l)((acc, r) => r.copy(left = acc))
-    case (l, None) => l
+  }
 
 def product2: Parser[Expression] =
   val expr = sum2 | value | parens2
-  Parser.map2(expr, Parser.many((times >> expr).map[Expression.Product](e => Expression.Product(Expression.Empty, e)))):
+  Parser.map2(expr, Parser.many((times >> expr).map[Expression.Product](e => Expression.Product(Expression.Empty, e)))) {
     case (l, rhss) => rhss.foldLeft(l)((acc, r) => r.copy(left = acc))
-    case (l, None) => l
+  }
 
 def parens2: Parser[Expression] =
   for
@@ -163,8 +164,9 @@ def part1(): Unit =
       .fromResource("day18.txt")
       .getLines()
       .map(parse(expression1, _))
-      .collect:
+      .collect {
         case Some(e) => e
+      }
       .map(eval)
       .sum
   println(res)
@@ -176,8 +178,9 @@ def part2(): Unit =
       .fromResource("day18.txt")
       .getLines()
       .map(parse(expression2, _))
-      .collect:
+      .collect {
         case Some(e) => e
+      }
       .map(eval)
       .sum
   println(res)

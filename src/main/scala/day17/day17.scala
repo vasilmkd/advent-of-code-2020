@@ -69,37 +69,41 @@ def rule2(universe: Universe4)(x: Long, y: Long, z: Long, w: Long): Boolean =
 def parse3(map: Array[Array[Char]]): Universe3 =
   map
     .zipWithIndex
-    .map:
-      (r, i) =>
-        r.zipWithIndex
-          .foldLeft(Map.empty[Cube, Boolean]):
-            case (acc, (c, j)) =>
-              if c == '#' then acc + ((i.toLong, j.toLong, 0L) -> true) else acc
+    .map { (r, i) =>
+      r.zipWithIndex
+        .foldLeft(Map.empty[Cube, Boolean]) {
+          case (acc, (c, j)) =>
+            if c == '#' then acc + ((i.toLong, j.toLong, 0L) -> true) else acc
+        }
+    }
     .foldLeft(Map.empty[Cube, Boolean])(_ ++ _)
 
 def parse4(map: Array[Array[Char]]): Universe4 =
   map
     .zipWithIndex
-    .map:
-      (r, i) =>
-        r.zipWithIndex
-          .foldLeft(Map.empty[Hypercube, Boolean]):
-            case (acc, (c, j)) =>
-              if c == '#' then acc + ((i.toLong, j.toLong, 0L, 0L) -> true) else acc
+    .map { (r, i) =>
+      r.zipWithIndex
+        .foldLeft(Map.empty[Hypercube, Boolean]) {
+          case (acc, (c, j)) =>
+            if c == '#' then acc + ((i.toLong, j.toLong, 0L, 0L) -> true) else acc
+        }
+    }
     .foldLeft(Map.empty[Hypercube, Boolean])(_ ++ _)
 
 def iteration3(universe: Universe3): Universe3 =
-  val blah = universe.map:
+  val blah = universe.map {
     case ((x, y, z), _) =>
       val activated = neighboring(x, y, z).filter(rule2(universe).tupled)
       if rule1(universe)(x, y, z) then activated :+ (x, y, z) else activated
+  }
   blah.foldLeft(Map.empty[Cube, Boolean])(_ ++ _.map(t => (t -> true)))
 
 def iteration4(universe: Universe4): Universe4 =
-  val blah = universe.map:
+  val blah = universe.map {
     case ((x, y, z, w), _) =>
       val activated = neighboring(x, y, z, w).filter(rule2(universe).tupled)
       if rule1(universe)(x, y, z, w) then activated :+ (x, y, z, w) else activated
+  }
   blah.foldLeft(Map.empty[Hypercube, Boolean])(_ ++ _.map(t => (t -> true)))
   
 @main

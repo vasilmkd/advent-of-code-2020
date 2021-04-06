@@ -19,8 +19,9 @@ def contiguous(nums: Vector[Long], index: Int, sum: Long): Option[Long] =
   LazyList
     .from(nums)
     .drop(index)
-    .scanLeft((0L, Long.MaxValue, 0L)):
+    .scanLeft((0L, Long.MaxValue, 0L)) {
       case ((s, min, max), n) => (s + n, math.min(min, n), math.max(max, n))
+    } 
     .takeWhile(_._1 <= sum)
     .find(_._1 == sum)
     .map(t => t._2 + t._3)
@@ -40,7 +41,8 @@ def part2(): Unit =
       .from(numbers)
       .zipWithIndex
       .map(t => contiguous(numbers, t._2, invalid))
-      .collectFirst:
+      .collectFirst {
         case Some(weakness) => weakness
+      }
       .getOrElse(-1L)
   println(result)
